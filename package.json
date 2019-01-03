@@ -1,0 +1,14 @@
+{
+  "name": "basicdataanalysis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "mocha tests/*.test.js"
+  },
+  "author": "Logan Esenther (logan@cal.berkeley.edu)",
+  "license": "ISC",
+  "devDependencies": {
+    "skew-normal-random": "^1.0.0"
+  }
+}

@@ -24,15 +24,31 @@ function mutate(_this) {
      *
      */
     const _rebuild = _ => {
-        const newData = [];
+        _removeDuplicates();
+    };
 
-        _this.getContainer().forEach(bucket => {
-            for (let i = 0; i < bucket.getSize(); i++) {
-                newData.push(bucket.getId());
+    /**
+     *
+     * @param {*} _
+     */
+    const _removeDuplicates = _ => {
+        const uniqueBuckets = [];
+        const toRemove = [];
+
+        _this.getContainer()
+        .forEach(bucket => {
+            const duplicate = uniqueBuckets
+            .find(_bucket => bucket.getId() === _bucket.getId());
+
+            if (duplicate) {
+                bucket.getItems().forEach(item => duplicate.addItem(item));
+                toRemove.push(bucket);
+            } else {
+                uniqueBuckets.push(bucket);
             }
         });
 
-        _this.load(newData, false);
+        toRemove.forEach(bucket => _this.remove(bucket));
     };
 
     /**

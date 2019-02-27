@@ -1,8 +1,18 @@
+const { exec } = require('child_process');
+
 const BucketContainer = require('./BucketContainer');
-const bucketContainerObject = new BucketContainer();
-bucketContainerObject.__modclass.createBundle({
-    cloneClass: true,
-    overwrite: true,
-    dependencies: [ { name: 'Bucket' }, { name: 'Item' } ],
-    excludeProps: [ 'getRawData', 'getContainer' ]
-});
+
+(_ => {
+    new BucketContainer()
+    .__modclass.createBundle({
+        filename: `modclass.bundle.js`,
+        cloneClass: true,
+        overwrite: true,
+        outputDir: './bundle',
+        dependencies: [ { name: 'Bucket', path: '../Bucket' }, { name: 'Item', path: '../Item' } ],
+        excludeProps: [ 'getRawData', 'getContainer' ]
+    })
+    .then(_ => {
+        exec(`browserify ./bundle/BucketContainer.bundle.js -o ./bundle/BucketContainer.browserified.js`);
+    });
+})();

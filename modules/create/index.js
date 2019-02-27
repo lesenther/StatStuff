@@ -61,7 +61,7 @@ function create(_this) {
 
         // Standard array
         if (data.length) {
-            data.forEach((value, index) => {
+            data.forEach(value => {
                 _this.createItemAddBucket(value);
             });
 

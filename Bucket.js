@@ -75,7 +75,7 @@ class Bucket {
      */
     removeItem(item) {
         const itemIndex = this.getItems().findIndex(_item => item.getValue() === _item.getValue());
-        this.getItems().slice(itemIndex, 1);
+        this.getItems().splice(itemIndex, 1);
 
         return this;
     }

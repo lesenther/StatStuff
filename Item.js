@@ -12,9 +12,13 @@ class Item {
      * @param {*} value
      */
     constructor(value) {
-        const validInputTypes = [ 'string', 'number' ];
+        const validInputTypes = [ String, Number ];
 
-        if (validInputTypes.indexOf(typeof value) === -1) {
+        if (typeof value === 'undefined') {
+            throw new Error('Input value must be defined');
+        }
+
+        if (!validInputTypes.find(type => value.constructor === type)) {
             throw new Error('Bad input value type');
         }
 

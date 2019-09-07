@@ -13,7 +13,7 @@ class BucketContainer {
      *
      * @param {Array} data Input data either as a standard array containing strings or numbers, or an associative array containing values and their quantities.
      */
-    constructor(data = [], dump = false) {
+    constructor(data = []) {
 
         /**
          * Container for storing bucket objects.

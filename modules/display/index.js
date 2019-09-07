@@ -9,6 +9,12 @@ const fadeBrick3 = '░';
 const leftBrick = '▌';
 const rightBrick = '▐';
 const emptyBrick = ' ';
+const verticalLine = '│';
+const verticalLineTick = '┤';
+const bottomLine = '_';
+const dash = '-';
+const fullDash = '―';
+const space = ' ';
 
 module.exports = _this => {
 
@@ -25,7 +31,9 @@ module.exports = _this => {
     const yIncrement = 1 / options.scale || 1;
     const lineNumber = Math.ceil(y / yIncrement);
     const averageMarkChar = options.markerChar || fadeBrick3;
-    const meanBucketIndex = _this.getIds().map(id => _this.getAverage() - id).filter(id => id >= 0).length - 1;
+    const meanBucketIndex = _this.isNumeric() && _this.getIds()
+    .map(id => _this.getAverage() - id)
+    .filter(id => id >= 0).length - 1;
 
     const yCeil = y + yIncrement / 2;
     const yFloor = y - yIncrement / 2;
@@ -85,8 +93,10 @@ module.exports = _this => {
    */
   const _getSlope = index => {
     const buckets = _this.getIds();
-    const _leftSlope = _ => (buckets[index].getSize() - buckets[index - 1].getSize()) / (buckets[index].getId() - buckets[index - 1].getId());
-    const _rightSlope = _ => (buckets[index + 1].getSize() - buckets[index].getSize()) / (buckets[index + 1].getId() - buckets[index].getId());
+    const _leftSlope = _ => (buckets[index].getSize() - buckets[index - 1].getSize()) /
+    (buckets[index].getId() - buckets[index - 1].getId());
+    const _rightSlope = _ => (buckets[index + 1].getSize() - buckets[index].getSize()) /
+    (buckets[index + 1].getId() - buckets[index].getId());
 
     if (buckets.length >= 1) {
       return 0;
@@ -96,10 +106,7 @@ module.exports = _this => {
       return _leftSlope();
     } else { // Slope will be an array of two numbers from -Inf to Inf
       // Possible situations:  // /- /\ -/ -- -\ \/ \- \\   =>  3^2
-      return [
-        _leftSlope(),
-        _rightSlope()
-      ];
+      return [ _leftSlope(), _rightSlope() ];
     }
   }
 
@@ -113,8 +120,8 @@ module.exports = _this => {
     const yIncrement = 1 / options.scale || 1;
     const bucketIds = _this.getIds();
     const maxBucketSize = _this.getMaxSize() > 10
-      ? Math.ceil(_this.getMaxSize() / 5) * 5
-      : _this.getMaxSize();
+    ? Math.ceil(_this.getMaxSize() / 5) * 5
+    : _this.getMaxSize();
     const maxBucketSizeLen = maxBucketSize.toString().length;
 
     const usedYAxisVals = [];
@@ -125,14 +132,14 @@ module.exports = _this => {
     for (let y = maxBucketSize; y > 0; y -= yIncrement) {
       const lineNumber = Math.ceil(y / yIncrement);
       const lineSize = Math.round(y).toString();
-      const isGuide = usedYAxisVals.indexOf(lineSize) === -1 && Math.round(y) % 5 === 0;
-      const sep = lineNumber === 1 ? '_' : ( isGuide ? '-' : ' ');
+      const isGuideLine = usedYAxisVals.indexOf(lineSize) === -1 && Math.round(y) % 5 === 0;
+      const sep = lineNumber === 1 ? bottomLine : ( isGuideLine ? dash : space);
 
       usedYAxisVals.push(lineSize);
 
-      line.push(` ` + (isGuide
-        ? (' '.repeat(Math.max(0, maxBucketSizeLen - lineSize.length)) + lineSize + ' ┤')
-        : (' '.repeat(maxBucketSizeLen) + ' │')) + sep);
+      line.push(space + (isGuideLine
+      ? (space.repeat(Math.max(0, maxBucketSizeLen - lineSize.length)) + lineSize + space + verticalLineTick)
+      : (space.repeat(maxBucketSizeLen + 1) + verticalLine)) + sep);
 
       for (let x = 0; x < bucketIds.length; x++) {
         const barSegment = _getBarSegment(x, y, options) || sep.repeat(_this.getMaxIdLength());
@@ -144,9 +151,9 @@ module.exports = _this => {
     }
 
     // Labels for x-axis
-    line.push(' '.repeat(maxBucketSizeLen + 4));
+    line.push(space.repeat(maxBucketSizeLen + 4));
     bucketIds.forEach(id => {
-      line.push(' '.repeat(_this.getMaxIdLength() - id.length) + id + ' ');
+      line.push(space.repeat(_this.getMaxIdLength() - id.length) + id + space);
     });
     output.push(line.join(''));
 
@@ -167,10 +174,10 @@ module.exports = _this => {
     return _this.getContainer().map(bucket => {
       const id = bucket.getId();
       const size = bucket.getSize();
-      const padding = ' '.repeat(_this.getMaxIdLength() - id.length);
+      const padding = space.repeat(_this.getMaxIdLength() - id.length);
       const bar = fullBrick.repeat(Math.floor(size * options.scale));
 
-      return `${padding}${id} │${bar} ${size}`;
+      return `${padding}${id} ${verticalLine}${bar} ${size}`;
     });
   };
 
